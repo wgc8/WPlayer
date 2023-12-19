@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WPlayer", "src\WPlayer\WPlayer.vcxproj", "{6E311F94-1910-4851-9158-73C98BCB4BFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E311F94-1910-4851-9158-73C98BCB4BFB}.Debug|x86.ActiveCfg = Debug|Win32
+		{6E311F94-1910-4851-9158-73C98BCB4BFB}.Debug|x86.Build.0 = Debug|Win32
+		{6E311F94-1910-4851-9158-73C98BCB4BFB}.Release|x86.ActiveCfg = Release|Win32
+		{6E311F94-1910-4851-9158-73C98BCB4BFB}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {85F25E8C-6DB8-402D-9D54-087E1D50DD03}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Translation Files">
+      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
+      <Extensions>ts</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{70bd80cc-8bd6-45a2-b898-88ce83d8e886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{8e1feec0-484b-4786-baaa-58c546d69c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logical">
+      <UniqueIdentifier>{39c284eb-63f4-4848-a615-3aea454a9372}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module">
+      <UniqueIdentifier>{62a08ec0-f9c3-4d24-af45-62960a0b8a2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{b32d154c-032c-403a-9cef-64080a9f479b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\ThreadBase">
+      <UniqueIdentifier>{85eb1560-f482-4883-b2d6-3a08b27211b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\Log">
+      <UniqueIdentifier>{9822bf83-2f28-48a4-bee1-40612e2a1c65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\Application">
+      <UniqueIdentifier>{3eff3295-dc04-4538-81f4-36c2fd20c7cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logical\DemuxThread">
+      <UniqueIdentifier>{222c5c42-4150-4346-9529-e00d83f89b93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\ThreadSafeQueue">
+      <UniqueIdentifier>{d22a31ae-a59c-4ff8-9d57-300a7039bce3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\GlobalDefine">
+      <UniqueIdentifier>{6a663732-c3bf-497b-8fc1-115b8f5149a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logical\AVPacketQueue">
+      <UniqueIdentifier>{0a06b9b2-1a44-40f3-826a-9c20726524aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ui\WPlayer.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="module\Thread\ThreadBase.cpp">
+      <Filter>src\module\ThreadBase</Filter>
+    </ClCompile>
+    <ClCompile Include="module\Log\easylogging++.cc">
+      <Filter>src\module\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="module\Application\WPlayerApplication.cpp">
+      <Filter>src\module\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\DemuxThread\DemuxThread.cpp">
+      <Filter>src\logical\DemuxThread</Filter>
+    </ClCompile>
+    <ClCompile Include="module\GlobalDefine\GlobalDefine.cpp">
+      <Filter>src\module\GlobalDefine</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\AVPacketQueue\AVPacketQueue.cpp">
+      <Filter>src\logical\AVPacketQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\AVFrameQueue\AVFrameQueue.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="res\WPlayer.qrc">
+      <Filter>res</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="ui\WPlayer.h">
+      <Filter>src\ui</Filter>
+    </QtMoc>
+    <QtMoc Include="module\Application\WPlayerApplication.h">
+      <Filter>src\module\Application</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ui\WPlayer.ui">
+      <Filter>src\ui</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="module\Thread\ThreadBase.h">
+      <Filter>src\module\ThreadBase</Filter>
+    </ClInclude>
+    <ClInclude Include="module\Log\easylogging++.h">
+      <Filter>src\module\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="module\Singleton.h">
+      <Filter>src\module</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\DemuxThread\DemuxThread.h">
+      <Filter>src\logical\DemuxThread</Filter>
+    </ClInclude>
+    <ClInclude Include="module\ThreadSafeQueue\ThreadSafeQueue.h">
+      <Filter>src\module\ThreadSafeQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="module\GlobalDefine\GlobalDefine.h">
+      <Filter>src\module\GlobalDefine</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\AVPacketQueue\AVPacketQueue.h">
+      <Filter>src\logical\AVPacketQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\AVFrameQueue\AVFrameQueue.h" />
+  </ItemGroup>
+</Project>

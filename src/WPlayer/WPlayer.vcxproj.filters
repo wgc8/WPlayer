@@ -41,6 +41,9 @@
     <Filter Include="src\logical\AVPacketQueue">
       <UniqueIdentifier>{0a06b9b2-1a44-40f3-826a-9c20726524aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\logical\AVFrameQueue">
+      <UniqueIdentifier>{0de57530-387e-4320-8fc3-50f1bae2fca5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ui\WPlayer.cpp">
@@ -67,7 +70,9 @@
     <ClCompile Include="logic\AVPacketQueue\AVPacketQueue.cpp">
       <Filter>src\logical\AVPacketQueue</Filter>
     </ClCompile>
-    <ClCompile Include="logic\AVFrameQueue\AVFrameQueue.cpp" />
+    <ClCompile Include="logic\AVFrameQueue\AVFrameQueue.cpp">
+      <Filter>src\logical\AVFrameQueue</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\WPlayer.qrc">
@@ -109,6 +114,8 @@
     <ClInclude Include="logic\AVPacketQueue\AVPacketQueue.h">
       <Filter>src\logical\AVPacketQueue</Filter>
     </ClInclude>
-    <ClInclude Include="logic\AVFrameQueue\AVFrameQueue.h" />
+    <ClInclude Include="logic\AVFrameQueue\AVFrameQueue.h">
+      <Filter>src\logical\AVFrameQueue</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

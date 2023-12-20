@@ -92,6 +92,35 @@ public:
 		m_condVar.notify_all();
 	};
 
+	std::shared_ptr<T> front() 
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
+		if (1 == m_iAbort)
+		{
+			return std::shared_ptr<T>();
+		}
+		if (m_que.empty())
+		{
+			return std::shared_ptr<T>();
+		}
+		std::shared_ptr<T> pItem = std::make_shared<T>(m_que.front());
+		return pItem;
+	}
+
+	int front(T& val)
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
+		if (1 == m_iAbort)
+		{
+			return -1;
+		}
+		if (m_que.empty())
+		{
+			return -2;
+		}
+		val = m_que.front();
+		return 0;
+	}
 private:
 	// ╤сап
 	std::queue<T> m_que;

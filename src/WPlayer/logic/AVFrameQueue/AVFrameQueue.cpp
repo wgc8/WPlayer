@@ -40,13 +40,29 @@ namespace wplayer {
 		if (ret < 0)
 		{
 			LOG(ERROR) << "AVFrameQueue pop failed, ret: " << ret;
+			return std::shared_ptr<AVFrame>();
 		}
 		return std::make_shared<AVFrame>(*tmpFrm);
 	}
 
 	std::shared_ptr<AVFrame> AVFrameQueue::front()
 	{
-		return nullptr;
+		AVFrame* tmpFrame = nullptr;
+		int ret = m_que.front(tmpFrame);
+		if (ret < 0)
+		{
+			LOG(ERROR) << "AVFrameQueue get front failed, ret: " << ret;
+			return std::shared_ptr<AVFrame>();
+		}
+		else
+		{
+			auto pFrame = std::make_shared<AVFrame>(*tmpFrame);
+		}
+	}
+
+	int AVFrameQueue::size()
+	{
+		return m_que.getSize();
 	}
 
 	void AVFrameQueue::release()

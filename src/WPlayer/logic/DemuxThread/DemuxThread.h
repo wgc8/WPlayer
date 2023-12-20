@@ -12,6 +12,7 @@
 #include <string>
 
 class AVFormatContext;
+class AVCodecParameters;
 namespace wplayer
 {
 	class AVPacketQueue;
@@ -21,10 +22,27 @@ namespace wplayer
 	public:
 		//DemuxThread() = delete;
 		DemuxThread(AVPacketQueue* audioQue, AVPacketQueue* videoQue);
+		// 禁用拷贝构造
+		DemuxThread(DemuxThread&) = delete;
 		~DemuxThread();
 		int init(const std::string url);
 		int stop();
 		virtual void run() override;
+
+		/**
+		 * @ fn: getAudioCodecParmes
+		 * @ brief: 获取音频解复用器上下文.
+		 * @return: AVCodecParameters *
+		 */
+		AVCodecParameters* getAudioCodecParmes();
+
+		/**
+		 * @ fn: getVideoCodecParmes
+		 * @ brief: 获取视频解复用器上下文.
+		 * @return: AVCodecParameters *
+		 */
+		AVCodecParameters* getVideoCodecParmes();
+
 	private:
 		// 视频流id
 		int m_iVideoStreamIdx = -1;
@@ -35,9 +53,9 @@ namespace wplayer
 		// 打开文件名
 		std::string m_strFileUrl;
 		// 视频帧队列
-		AVPacketQueue* m_videoPktQue{ nullptr };
+		AVPacketQueue* m_queVideoPkt{ nullptr };
 		// 音频帧队列
-		AVPacketQueue* m_audioPktQue{ nullptr };
+		AVPacketQueue* m_queAudioPkt{ nullptr };
 		// 封装上下文
 		AVFormatContext* m_pFormatContext{ nullptr };
 	};

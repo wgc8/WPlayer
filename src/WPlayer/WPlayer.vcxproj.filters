@@ -44,6 +44,9 @@
     <Filter Include="src\logical\AVFrameQueue">
       <UniqueIdentifier>{0de57530-387e-4320-8fc3-50f1bae2fca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\logical\DecodeThread">
+      <UniqueIdentifier>{21c4b214-9d70-4fec-b5a4-3ea412c607f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ui\WPlayer.cpp">
@@ -72,6 +75,9 @@
     </ClCompile>
     <ClCompile Include="logic\AVFrameQueue\AVFrameQueue.cpp">
       <Filter>src\logical\AVFrameQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\DecodeThread\DecodeThread.cpp">
+      <Filter>src\logical\DecodeThread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="logic\AVFrameQueue\AVFrameQueue.h">
       <Filter>src\logical\AVFrameQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\DecodeThread\DecodeThread.h">
+      <Filter>src\logical\DecodeThread</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

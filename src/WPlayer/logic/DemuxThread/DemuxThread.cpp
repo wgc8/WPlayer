@@ -23,8 +23,8 @@ extern "C"
 namespace wplayer
 {
 	DemuxThread::DemuxThread(AVPacketQueue* audioQue, AVPacketQueue* videoQue): 
-		m_audioPktQue(audioQue),
-		m_videoPktQue(videoQue)
+		m_queAudioPkt(audioQue),
+		m_queVideoPkt(videoQue)
 	{
 		LOG(INFO) << "construct DemuxThread";
 	}
@@ -80,7 +80,7 @@ namespace wplayer
 		LOG(INFO) << "start run demux thread.";
 		int ret = 0;
 		AVPacket pkt;
-		while (true)
+		for(;;)
 		{
 			if (m_bStop)
 			{
@@ -97,14 +97,14 @@ namespace wplayer
 			// 找到视频包插入到视频队列
 			if (pkt.stream_index == m_iVideoStreamIdx)
 			{
-				LOG(INFO) << "push video pkt, size: " << m_videoPktQue->size();
-				m_videoPktQue->push(&pkt);
+				LOG(INFO) << "push video pkt, size: " << m_queVideoPkt->size();
+				m_queVideoPkt->push(&pkt);
 			}
 			// 找到音频包插入到音频队列
 			else if (pkt.stream_index == m_iAudioStreamIdx)
 			{
-				LOG(INFO) << "push audio pkt, size: " << m_audioPktQue->size();
-				m_audioPktQue->push(&pkt);
+				LOG(INFO) << "push audio pkt, size: " << m_queAudioPkt->size();
+				m_queAudioPkt->push(&pkt);
 			} 
 			else
 			{
@@ -112,5 +112,21 @@ namespace wplayer
 			}
 		}
 		LOG(INFO) << "exit demux thread";
+	}
+
+	// 获取音频解码器参数
+	AVCodecParameters* DemuxThread::getAudioCodecParmes()
+	{
+		if (m_iAudioStreamIdx < 0)
+			return nullptr;
+		return m_pFormatContext->streams[m_iAudioStreamIdx]->codecpar;
+	}
+
+	// 获取视频解码器参数
+	AVCodecParameters* DemuxThread::getVideoCodecParmes()
+	{
+		if (m_iVideoStreamIdx < 0)
+			return nullptr;
+		return m_pFormatContext->streams[m_iVideoStreamIdx]->codecpar;
 	}
 }

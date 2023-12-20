@@ -35,6 +35,13 @@ namespace wplayer {
 		 * @return: std::shared_ptr<AVFrame>
 		 */
 		std::shared_ptr<AVFrame> front();
+		/**
+		 * @ fn: size
+		 * @ brief: 获取队列size.
+		 * @return: int
+		 */
+		int size();
+
 	private:
 		/**
 		 * @ fn: release

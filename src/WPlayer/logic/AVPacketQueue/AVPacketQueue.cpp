@@ -40,6 +40,7 @@ namespace wplayer {
 		if (ret < 0)
 		{
 			LOG(ERROR) << "AVPacketQueue pop failed, ret: " << ret;
+			return std::shared_ptr<AVPacket>();
 		}
 		return std::make_shared<AVPacket>(*tmpPkt);
 	}

@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="logic\DecodeThread\DecodeThread.cpp" />
     <ClCompile Include="logic\AVFrameQueue\AVFrameQueue.cpp" />
     <ClCompile Include="logic\AVPacketQueue\AVPacketQueue.cpp" />
     <ClCompile Include="logic\DemuxThread\DemuxThread.cpp" />
@@ -145,6 +146,7 @@
     <QtUic Include="ui\WPlayer.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="logic\DecodeThread\DecodeThread.h" />
     <ClInclude Include="logic\AVFrameQueue\AVFrameQueue.h" />
     <ClInclude Include="logic\AVPacketQueue\AVPacketQueue.h" />
     <ClInclude Include="logic\DemuxThread\DemuxThread.h" />

@@ -33,7 +33,7 @@ public:
 		}
 		if (m_que.empty())
 		{
-			return -2;	// 等待超时
+			return -2;	// 队列空导致等待超时
 		}
 		t = std::move(m_que.front());
 		m_que.pop();

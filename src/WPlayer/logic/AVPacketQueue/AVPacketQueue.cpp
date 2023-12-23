@@ -33,16 +33,15 @@ namespace wplayer {
 		return m_que.push(tmpPkt);
 	}
 	
-	std::shared_ptr<AVPacket> AVPacketQueue::waitAndPop(const int timeout)
+	AVPacket* AVPacketQueue::waitAndPop(const int timeout)
 	{
 		AVPacket* tmpPkt = nullptr;
 		int ret = m_que.waitAndPop(tmpPkt, timeout);
 		if (ret < 0)
 		{
-			LOG(ERROR) << "AVPacketQueue pop failed, ret: " << ret;
-			return std::shared_ptr<AVPacket>();
+			return nullptr;
 		}
-		return std::make_shared<AVPacket>(*tmpPkt);
+		return tmpPkt;
 	}
 
 	int AVPacketQueue::size()

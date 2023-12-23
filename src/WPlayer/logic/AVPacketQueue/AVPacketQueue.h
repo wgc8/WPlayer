@@ -36,9 +36,9 @@ namespace wplayer {
 		 * @ fn: waitAndPop
 		 * @ brief: ×èÈûpop.
 		 * @ param: timeout
-		 * @return: std::shared_ptr<AVPacket>
+		 * @return: AVPacket*
 		 */
-		std::shared_ptr<AVPacket> waitAndPop(const int timeout);
+		AVPacket* waitAndPop(const int timeout);
 
 		/**
 		 * @ fn: size

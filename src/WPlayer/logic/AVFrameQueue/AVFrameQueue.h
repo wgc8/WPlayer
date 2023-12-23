@@ -28,7 +28,7 @@ namespace wplayer {
 		 * @ param: timeout
 		 * @return: std::shared_ptr<AVFrame>
 		 */
-		std::shared_ptr<AVFrame> waitAndPop(const int timeout);
+		AVFrame* waitAndPop(const int timeout);
 		/**
 		 * @ fn: front
 		 * @ brief: 获取队头.

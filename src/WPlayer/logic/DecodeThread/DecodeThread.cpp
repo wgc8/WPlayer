@@ -62,14 +62,17 @@ namespace wplayer
 				LOG(INFO) << "quit thread then, bStop: " << m_bStop;
 				break;
 			}
-			auto pSharedPkt = m_quePacket->waitAndPop(10);
-			if (!pSharedPkt)
+			auto pPkt = m_quePacket->waitAndPop(10);
+			if (!pPkt)
 			{
 				LOG(INFO) << "not get packet";
 				continue;
 			}
-			auto pPkt = pSharedPkt.get();
 			int ret = avcodec_send_packet(m_pCodecContext, pPkt);
+			if (!pPkt)
+			{
+				LOG(ERROR) << "pPkt is nullptr2";
+			}
 			av_packet_free(&pPkt);
 			if (ret < 0)
 			{
@@ -84,7 +87,7 @@ namespace wplayer
 				if (0 == ret)
 				{
 					m_queFrame->push(tmpFrm);
-					//LOG(INFO) << "que size" << m_queFrame->size();
+					LOG(INFO) << "frame que size: " << m_queFrame->size();
 				}
 				else if (AVERROR(EAGAIN) == ret)
 				{

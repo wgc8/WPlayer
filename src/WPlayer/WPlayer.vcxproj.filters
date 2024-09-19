@@ -47,6 +47,21 @@
     <Filter Include="src\logical\DecodeThread">
       <UniqueIdentifier>{21c4b214-9d70-4fec-b5a4-3ea412c607f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\logical\AudioOutput">
+      <UniqueIdentifier>{c37a57df-6d62-48f4-95e8-a7635df22b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logical\VideoOutput">
+      <UniqueIdentifier>{8396fe45-4379-4166-b501-61bf2b98a007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\GLWidget">
+      <UniqueIdentifier>{81514f69-41cd-4d80-9b95-eba014b8e3e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logical\PlayController">
+      <UniqueIdentifier>{2ab30513-3789-4730-ae37-11d201d6eb48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\PlayControlWidget">
+      <UniqueIdentifier>{be36b379-b620-451e-8c23-754d3e3b7293}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ui\WPlayer.cpp">
@@ -79,6 +94,21 @@
     <ClCompile Include="logic\DecodeThread\DecodeThread.cpp">
       <Filter>src\logical\DecodeThread</Filter>
     </ClCompile>
+    <ClCompile Include="logic\AudioOutput\AudioOutput.cpp">
+      <Filter>src\logical\AudioOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\VideoOutput\VideoOutput.cpp">
+      <Filter>src\logical\VideoOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\PlayController\PlayController.cpp">
+      <Filter>src\logical\PlayController</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\PlayControlWidget\PlayControlBar.cpp">
+      <Filter>src\ui\PlayControlWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="module\GLWidget\GLRenderWidget.cpp">
+      <Filter>src\module\GLWidget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\WPlayer.qrc">
@@ -92,10 +122,28 @@
     <QtMoc Include="module\Application\WPlayerApplication.h">
       <Filter>src\module\Application</Filter>
     </QtMoc>
+    <QtMoc Include="logic\AudioOutput\AudioOutput.h">
+      <Filter>src\logical\AudioOutput</Filter>
+    </QtMoc>
+    <QtMoc Include="logic\VideoOutput\VideoOutput.h">
+      <Filter>src\logical\VideoOutput</Filter>
+    </QtMoc>
+    <QtMoc Include="logic\PlayController\PlayController.h">
+      <Filter>src\logical\PlayController</Filter>
+    </QtMoc>
+    <QtMoc Include="ui\PlayControlWidget\PlayControlBar.h">
+      <Filter>src\ui\PlayControlWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="module\GLWidget\GLRenderWidget.h">
+      <Filter>src\module\GLWidget</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ui\WPlayer.ui">
       <Filter>src\ui</Filter>
+    </QtUic>
+    <QtUic Include="ui\PlayControlWidget\PlayControlBar.ui">
+      <Filter>src\ui\PlayControlWidget</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="logic\DecodeThread\DecodeThread.h">
       <Filter>src\logical\DecodeThread</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\PlayController\PlayControlState.h">
+      <Filter>src\logical\PlayController</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

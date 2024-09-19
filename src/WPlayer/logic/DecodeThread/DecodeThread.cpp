@@ -22,6 +22,9 @@ extern "C"
 }
 #endif // __cplusplus
 
+#define MAX_FRAMEQUEUE_SIZE 16		// 包队列最大长度
+#define DECODEC_THREAD_SLEEP_TIME 10		// 睡眠10毫秒
+
 namespace wplayer
 {
 	DecodeThread::DecodeThread(AVPacketQueue* pktQue, AVFrameQueue* frmQue):
@@ -62,17 +65,21 @@ namespace wplayer
 				LOG(INFO) << "quit thread then, bStop: " << m_bStop;
 				break;
 			}
+			// 当队列积压过多时，进行流量控制
+			if (m_queFrame->size() > MAX_FRAMEQUEUE_SIZE)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(DECODEC_THREAD_SLEEP_TIME));
+				continue;
+			}
 			auto pPkt = m_quePacket->waitAndPop(10);
 			if (!pPkt)
 			{
+#ifdef DEBUG_MODE
 				LOG(INFO) << "not get packet";
+#endif
 				continue;
 			}
 			int ret = avcodec_send_packet(m_pCodecContext, pPkt);
-			if (!pPkt)
-			{
-				LOG(ERROR) << "pPkt is nullptr2";
-			}
 			av_packet_free(&pPkt);
 			if (ret < 0)
 			{
@@ -87,7 +94,7 @@ namespace wplayer
 				if (0 == ret)
 				{
 					m_queFrame->push(tmpFrm);
-					LOG(INFO) << "frame que size: " << m_queFrame->size();
+					//LOG(INFO) << m_pCodecContext->codec->name << " frame que size: " << m_queFrame->size();
 				}
 				else if (AVERROR(EAGAIN) == ret)
 				{

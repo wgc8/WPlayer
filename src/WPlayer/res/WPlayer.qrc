@@ -1,4 +1,7 @@
 <RCC>
-    <qresource prefix="WPlayer">
+    <qresource prefix="/WPlayer"/>
+    <qresource prefix="/Icons">
+        <file>Icons/pause.svg</file>
+        <file>Icons/play.svg</file>
     </qresource>
 </RCC>

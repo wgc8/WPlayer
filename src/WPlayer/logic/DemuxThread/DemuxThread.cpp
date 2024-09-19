@@ -20,6 +20,9 @@ extern "C"
 }
 #endif // __cplusplus
 
+#define MAX_PACKETQUEUE_SIZE 100		// 包队列最大长度
+#define DEMUX_THREAD_SLEEP_TIME 10		// 睡眠10毫秒
+
 namespace wplayer
 {
 	DemuxThread::DemuxThread(AVPacketQueue* audioQue, AVPacketQueue* videoQue): 
@@ -28,16 +31,16 @@ namespace wplayer
 	{
 		LOG(INFO) << "construct DemuxThread";
 	}
+
 	DemuxThread::~DemuxThread()
 	{
-		if (m_pFormatContext)
-			stop();
+		stop();
 	}
 
 	int DemuxThread::init(const std::string url)
 	{
 		m_strFileUrl = url;
-		LOG(INFO) << "open dile url: " << url;
+		LOG(INFO) << "open file url: " << url;
 		//LOG(INFO) << av_version_info();
 		int ret = 0;
 		//m_pFormatContext = avformat_alloc_context();
@@ -71,7 +74,8 @@ namespace wplayer
 	int DemuxThread::stop()
 	{
 		ThreadBase::stop();
-		avformat_close_input(&m_pFormatContext);
+		if (m_pFormatContext)
+			avformat_close_input(&m_pFormatContext);
 		return 0;
 	}
 
@@ -87,6 +91,12 @@ namespace wplayer
 				LOG(INFO) << "stop demux thread.";
 				break;
 			}
+			// 当队列积压过多时，进行流量控制
+			if (m_queAudioPkt->size() > MAX_PACKETQUEUE_SIZE || m_queVideoPkt->size() > MAX_PACKETQUEUE_SIZE)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(DEMUX_THREAD_SLEEP_TIME));
+				continue;
+			}
 			ret = av_read_frame(m_pFormatContext, &pkt);
 			if (ret < 0)
 			{
@@ -97,13 +107,17 @@ namespace wplayer
 			// 找到视频包插入到视频队列
 			if (pkt.stream_index == m_iVideoStreamIdx)
 			{
+#ifdef DEBUG_MODE
 				LOG(INFO) << "push video pkt, size: " << m_queVideoPkt->size();
+#endif
 				m_queVideoPkt->push(&pkt);
 			}
 			// 找到音频包插入到音频队列
 			else if (pkt.stream_index == m_iAudioStreamIdx)
 			{
+#ifdef DEBUG_MODE
 				LOG(INFO) << "push audio pkt, size: " << m_queAudioPkt->size();
+#endif
 				m_queAudioPkt->push(&pkt);
 			} 
 			else
@@ -115,7 +129,7 @@ namespace wplayer
 	}
 
 	// 获取音频解码器参数
-	AVCodecParameters* DemuxThread::getAudioCodecParmes()
+	AVCodecParameters* DemuxThread::getAudioCodecParames()
 	{
 		if (m_iAudioStreamIdx < 0)
 			return nullptr;
@@ -123,10 +137,20 @@ namespace wplayer
 	}
 
 	// 获取视频解码器参数
-	AVCodecParameters* DemuxThread::getVideoCodecParmes()
+	AVCodecParameters* DemuxThread::getVideoCodecParames()
 	{
 		if (m_iVideoStreamIdx < 0)
 			return nullptr;
 		return m_pFormatContext->streams[m_iVideoStreamIdx]->codecpar;
+	}
+
+	// 获取音频时长
+	int64_t DemuxThread::getDuration()
+	{
+		if (m_pFormatContext)
+		{
+			return m_pFormatContext->duration;
+		}
+		return 0;
 	}
 }

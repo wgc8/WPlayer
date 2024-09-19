@@ -25,7 +25,7 @@ void ThreadBase::stop()
 	}
 }
 
-void ThreadBase::start()
+int ThreadBase::start()
 {
 	m_bStop = false;
 	try
@@ -34,6 +34,6 @@ void ThreadBase::start()
 	}
 	catch(...)
 	{
-
 	}
+	return m_pThread ? 0 : -1;
 }

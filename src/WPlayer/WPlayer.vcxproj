@@ -38,14 +38,14 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="QtSettings">
     <QtInstall>5.15.2</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;multimedia;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtToolsDesignTime>false</QtToolsDesignTime>
     <IntDir>$(SolutionDir)GeneratedFiles\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="QtSettings">
     <QtInstall>5.15.2</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;opengl;gui;multimedia;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
     <QtToolsDesignTime>false</QtToolsDesignTime>
     <IntDir>GeneratedFiles\$(Configuration)\</IntDir>
@@ -88,7 +88,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -117,7 +117,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,16 +125,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="logic\AudioOutput\AudioOutput.cpp" />
     <ClCompile Include="logic\DecodeThread\DecodeThread.cpp" />
     <ClCompile Include="logic\AVFrameQueue\AVFrameQueue.cpp" />
     <ClCompile Include="logic\AVPacketQueue\AVPacketQueue.cpp" />
     <ClCompile Include="logic\DemuxThread\DemuxThread.cpp" />
+    <ClCompile Include="logic\PlayController\PlayController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="module\GlobalDefine\GlobalDefine.cpp" />
+    <ClCompile Include="module\GLWidget\GLRenderWidget.cpp" />
     <ClCompile Include="module\Log\easylogging++.cc" />
     <ClCompile Include="module\Thread\ThreadBase.cpp" />
     <ClCompile Include="module\Application\WPlayerApplication.cpp" />
+    <ClCompile Include="ui\PlayControlWidget\PlayControlBar.cpp" />
     <ClCompile Include="ui\WPlayer.cpp" />
+    <ClCompile Include="logic\VideoOutput\VideoOutput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ui\WPlayer.h" />
@@ -143,16 +148,23 @@
     <QtRcc Include="res\WPlayer.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="ui\PlayControlWidget\PlayControlBar.ui" />
     <QtUic Include="ui\WPlayer.ui" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="ui\PlayControlWidget\PlayControlBar.h" />
+    <QtMoc Include="logic\AudioOutput\AudioOutput.h" />
     <ClInclude Include="logic\DecodeThread\DecodeThread.h" />
     <ClInclude Include="logic\AVFrameQueue\AVFrameQueue.h" />
     <ClInclude Include="logic\AVPacketQueue\AVPacketQueue.h" />
     <ClInclude Include="logic\DemuxThread\DemuxThread.h" />
+    <QtMoc Include="logic\PlayController\PlayController.h" />
+    <ClInclude Include="logic\PlayController\PlayControlState.h" />
+    <QtMoc Include="module\GLWidget\GLRenderWidget.h" />
     <ClInclude Include="module\Log\easylogging++.h" />
     <ClInclude Include="module\Thread\ThreadBase.h" />
     <ClInclude Include="module\ThreadSafeQueue\ThreadSafeQueue.h" />
+    <QtMoc Include="logic\VideoOutput\VideoOutput.h" />
     <QtMoc Include="module\Application\WPlayerApplication.h" />
     <ClInclude Include="module\GlobalDefine\GlobalDefine.h" />
     <ClInclude Include="module\Singleton.h" />

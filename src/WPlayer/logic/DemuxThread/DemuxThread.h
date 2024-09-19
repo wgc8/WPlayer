@@ -30,19 +30,24 @@ namespace wplayer
 		virtual void run() override;
 
 		/**
-		 * @ fn: getAudioCodecParmes
+		 * @ fn: getAudioCodecParames
 		 * @ brief: 获取音频解复用器上下文.
 		 * @return: AVCodecParameters *
 		 */
-		AVCodecParameters* getAudioCodecParmes();
+		AVCodecParameters* getAudioCodecParames();
 
 		/**
-		 * @ fn: getVideoCodecParmes
+		 * @ fn: getVideoCodecParames
 		 * @ brief: 获取视频解复用器上下文.
 		 * @return: AVCodecParameters *
 		 */
-		AVCodecParameters* getVideoCodecParmes();
-
+		AVCodecParameters* getVideoCodecParames();
+		/**
+		 * @ fn: getDuration
+		 * @ brief: 获取视频时长.
+		 * @return: int64_t
+		 */
+		int64_t getDuration();
 	private:
 		// 视频流id
 		int m_iVideoStreamIdx = -1;

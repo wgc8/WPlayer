@@ -8,7 +8,7 @@ public:
 	virtual ~ThreadBase();
 
 	void stop();
-	void start();
+	int start();
 	virtual void run() = 0;
 protected:
 	bool m_bStop{ false };

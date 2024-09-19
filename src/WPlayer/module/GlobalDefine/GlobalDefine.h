@@ -1,6 +1,7 @@
 #ifndef __GLOBAL_DEFINE_H__
 #define __GLOBAL_DEFINE_H__
 #include <QString>
+
 namespace wplayer
 {
 	// 日志开头

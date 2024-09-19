@@ -26,15 +26,15 @@ namespace wplayer {
 		 * @ fn: waitAndPop
 		 * @ brief: 阻塞读.
 		 * @ param: timeout
-		 * @return: std::shared_ptr<AVFrame>
+		 * @return: AVFrame*
 		 */
 		AVFrame* waitAndPop(const int timeout);
 		/**
 		 * @ fn: front
 		 * @ brief: 获取队头.
-		 * @return: std::shared_ptr<AVFrame>
+		 * @return: AVFrame
 		 */
-		std::shared_ptr<AVFrame> front();
+		AVFrame* front();
 		/**
 		 * @ fn: size
 		 * @ brief: 获取队列size.

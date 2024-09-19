@@ -1,10 +1,8 @@
 #include "ui/WPlayer.h"
 #include "module/Application/WPlayerApplication.h"
 #include "module/Log/easylogging++.h"
-#include "logic/DemuxThread/DemuxThread.h"
-#include "logic/AVPacketQueue/AVPacketQueue.h"
-#include "logic/AVFrameQueue/AVFrameQueue.h"
-#include "logic/DecodeThread/DecodeThread.h"
+
+#include "logic/AudioOutput/AudioOutput.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -26,33 +24,55 @@ int main(int argc, char *argv[])
     //LOG(INFO) << av_version_info();
     LOG(INFO) << "run path: " << argv[0];
 
-#if 1   // ต๗สิ
-    AVPacketQueue aPacketQue, vPacketQue;
-    AVFrameQueue aFrameQue, vFrameQue;
-    DemuxThread* tmpDemux = new DemuxThread(&aPacketQue, &vPacketQue);
-    tmpDemux->init("test.mp4");
+#if 0   // ต๗สิ
+    AVPacketQueue m_aPacketQue, m_vPacketQue;
+    AVFrameQueue m_aFrameQue, m_vFrameQue;
+    DemuxThread* tmpDemux = new DemuxThread(&m_aPacketQue, &m_vPacketQue);
+    tmpDemux->init("02.mp4");
     tmpDemux->start();
 
-    //DecodeThread* pVideoDecodec = new DecodeThread(&vPacketQue, &vFrameQue);
-    DecodeThread* pAudioDecodec = new DecodeThread(&aPacketQue, &aFrameQue);
-
-    int ret = pAudioDecodec->init(tmpDemux->getAudioCodecParmes());
+    DecodeThread* pAudioDecodec = new DecodeThread(&m_aPacketQue, &m_aFrameQue);
+    DecodeThread* pVideoDecodec = new DecodeThread(&m_vPacketQue, &m_vFrameQue);
+    int ret = 0;
+    ret = pAudioDecodec->init(tmpDemux->getAudioCodecParames());
     if (ret < 0)
     {
         LOG(INFO) << "pAudioDecodec init failed";
     }
-    pAudioDecodec->start();
+    ret = pVideoDecodec->init(tmpDemux->getVideoCodecParames());
+    if (ret < 0)
+    {
+        LOG(INFO) << "pVideoDecodec init failed";
+    }
+    ret = pAudioDecodec->start();
+    if (0 == ret)
+    {
+        LOG(INFO) << "start pAudioDecodec success";
+    }
+    ret = pVideoDecodec->start();
+    if (0 == ret)
+    {
+        LOG(INFO) << "start pVideoDecodec success";
+    }
+    auto pAudioOutput = new AudioOutput(&m_aFrameQue);
 
+    pAudioOutput->init(tmpDemux->getAudioCodecParames());
+    pAudioOutput->start();
+    pAudioOutput->playControl(PCS_PLAYING);
 
-    Sleep(2000);
+    Sleep(5000);
     tmpDemux->stop();
     pAudioDecodec->stop();
+    pVideoDecodec->stop();
 
     delete tmpDemux;
     delete pAudioDecodec;
+    delete pVideoDecodec;
+
 #endif  // end ต๗สิ
 
     WPlayer w;
+    w.init();
     w.show();
 
     return a.exec();

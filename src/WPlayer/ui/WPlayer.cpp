@@ -1,10 +1,48 @@
 #include "WPlayer.h"
+#include "module/GLWidget/GLRenderWidget.h"
+#include "ui/PlayControlWidget/PlayControlBar.h"
+#include "logic/PlayController/PlayController.h"
+#include "module/Log/easylogging++.h"
 
-WPlayer::WPlayer(QWidget *parent)
-    : QMainWindow(parent)
-{
-    ui.setupUi(this);
+namespace wplayer {
+    WPlayer::WPlayer(QWidget* parent)
+        : QMainWindow(parent)
+    {
+        ui.setupUi(this);
+    }
+
+    void WPlayer::init()
+    {
+        initAVOutput();
+        initUI();
+        initConnection();
+        PlayController::getInstance().setFileName("dove.mp4");
+
+    }
+
+    void WPlayer::initUI()
+    {
+        m_pPlayControlBar = new PlayControlBar(this);
+        ui.verticalLayout->addWidget(m_pPlayControlBar);
+    }
+
+    void WPlayer::initAVOutput()
+    {
+        m_pGLWidget = new GLRenderWidget(this);
+        if (m_pGLWidget)
+        {
+            ui.gridLayout->addWidget((QWidget*)m_pGLWidget);
+            PlayController::getInstance().setGLWidget(m_pGLWidget);
+        }
+    }
+
+    void WPlayer::initConnection()
+    {
+        connect(m_pPlayControlBar, &PlayControlBar::signalPlay, &PlayController::getInstance(), &PlayController::play);
+        connect(m_pPlayControlBar, &PlayControlBar::signalPause, &PlayController::getInstance(), &PlayController::pause);
+    }
+
+    WPlayer::~WPlayer()
+    {
+    }
 }
-
-WPlayer::~WPlayer()
-{}

@@ -15,8 +15,9 @@ extern "C"
 
 namespace wplayer
 {
-	VideoOutput::VideoOutput(AVFrameQueue* videoFrameQue):
+	VideoOutput::VideoOutput(AVFrameQueue* videoFrameQue, SyncClock* clock):
 		m_pFrameQue(videoFrameQue),
+		m_pClock(clock),
 		m_timer(new QTimer(this))
 	{
 		m_glWidget = new GLRenderWidget(nullptr);
@@ -81,13 +82,14 @@ namespace wplayer
 	}
 
 	// 初始化视频播放参数
-	int VideoOutput::init(AVCodecParameters* videoParams)
+	int VideoOutput::init(AVCodecParameters* videoParams, const AVRational& timebase)
 	{
 		if (!videoParams)
 		{
 			LOG(INFO) << "VideoOut init failed, videoParams is nullptr";
 			return -1;
 		}
+		m_timebase = timebase;
 		m_pVideoParams = videoParams;
 		m_iHeight = m_pVideoParams->height;
 		m_iWidth = m_pVideoParams->width;

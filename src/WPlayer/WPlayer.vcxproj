@@ -137,6 +137,7 @@
     <ClCompile Include="module\Log\easylogging++.cc" />
     <ClCompile Include="module\Thread\ThreadBase.cpp" />
     <ClCompile Include="module\Application\WPlayerApplication.cpp" />
+    <ClCompile Include="logic\SyncClock\SyncClock.cpp" />
     <ClCompile Include="ui\PlayControlWidget\PlayControlBar.cpp" />
     <ClCompile Include="ui\WPlayer.cpp" />
     <ClCompile Include="logic\VideoOutput\VideoOutput.cpp" />
@@ -152,6 +153,7 @@
     <QtUic Include="ui\WPlayer.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="logic\SyncClock\SyncClock.h" />
     <QtMoc Include="ui\PlayControlWidget\PlayControlBar.h" />
     <QtMoc Include="logic\AudioOutput\AudioOutput.h" />
     <ClInclude Include="logic\DecodeThread\DecodeThread.h" />

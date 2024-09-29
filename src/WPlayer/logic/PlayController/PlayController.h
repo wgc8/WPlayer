@@ -21,13 +21,18 @@ namespace wplayer {
 	class AudioOutput;
 	class DemuxThread;
 	class DecodeThread;
-	class PlayControlBar;
+	class SyncClock;
+
 	class PlayController : public QObject, public Singleton<PlayController>
 	{
 		Q_OBJECT;
 		SINGLETON_CONFIG(PlayController)
 	public:
-
+		/**
+		 * @ fn: init
+		 * @ brief: 初始化播放资源.
+		 * @return: int
+		 */
 		int init();
 	signals:
 		void signalUpdateProgress(const int64_t& curDur, const int64_t& dur);
@@ -101,5 +106,6 @@ namespace wplayer {
 		DemuxThread* m_pDemuxThread{ nullptr };             // 解封装线程
 		DecodeThread* m_pVideoDecodeThread{ nullptr };      // 视频解码线程
 		DecodeThread* m_pAudioDecodeThread{ nullptr };      // 音频解码线程
+		SyncClock* m_pClock{ nullptr };						// 音画同步时钟
 	};
 }

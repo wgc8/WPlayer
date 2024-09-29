@@ -16,8 +16,9 @@ extern "C"
 
 namespace wplayer
 {
-	AudioOutput::AudioOutput(AVFrameQueue* audioFrameQue):
-		m_pQueAudioFrame(audioFrameQue)
+	AudioOutput::AudioOutput(AVFrameQueue* audioFrameQue, SyncClock* clock):
+		m_pQueAudioFrame(audioFrameQue),
+		m_pClock(clock)
 	{
 		
 	}
@@ -86,13 +87,14 @@ namespace wplayer
 		return 0;
 	}
 	// 初始化音频输出模线程
-	int AudioOutput::init(AVCodecParameters* audioParms)
+	int AudioOutput::init(AVCodecParameters* audioParms, const AVRational& timebase)
 	{
 		if (!audioParms)
 		{
 			LOG(INFO) << "audioParams is nullptr";
 			return -1;
 		}
+		m_timebase = timebase;
 		m_pAudioParams = audioParms;
 		int ret = 0;
 		ret = initDstAudioParams();
@@ -188,7 +190,6 @@ namespace wplayer
 					LOG(INFO) << "swr_convert failed, errCode: " << len << " errStr: " << m_strErr;
 					return;
 				}
-
 				int tmp = outBytes;
 #if 1			// 只要存在空间就往声卡写，直到帧数据写完
 				while (tmp > 0)

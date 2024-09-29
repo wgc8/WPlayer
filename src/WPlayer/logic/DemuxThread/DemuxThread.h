@@ -10,7 +10,13 @@
 #pragma once
 #include "module/Thread/ThreadBase.h"
 #include <string>
-
+#ifdef __cplusplus
+extern "C"
+{
+	// 包含ffmpeg头文件
+#include "libavutil/rational.h"
+}
+#endif // __cplusplus
 class AVFormatContext;
 class AVCodecParameters;
 namespace wplayer
@@ -48,6 +54,10 @@ namespace wplayer
 		 * @return: int64_t
 		 */
 		int64_t getDuration();
+
+		AVRational getAudioTimeBase();
+
+		AVRational getVideoTimeBase();
 	private:
 		// 视频流id
 		int m_iVideoStreamIdx = -1;

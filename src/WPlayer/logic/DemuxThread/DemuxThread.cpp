@@ -13,10 +13,9 @@
 #ifdef __cplusplus
 extern "C"
 {
-	// 包含ffmpeg头文件
+// 包含ffmpeg头文件
 #include "libavutil/avutil.h"
 #include "libavformat/avformat.h"
-
 }
 #endif // __cplusplus
 
@@ -131,7 +130,7 @@ namespace wplayer
 	// 获取音频解码器参数
 	AVCodecParameters* DemuxThread::getAudioCodecParames()
 	{
-		if (m_iAudioStreamIdx < 0)
+		if (!m_pFormatContext || m_iAudioStreamIdx < 0)
 			return nullptr;
 		return m_pFormatContext->streams[m_iAudioStreamIdx]->codecpar;
 	}
@@ -139,7 +138,7 @@ namespace wplayer
 	// 获取视频解码器参数
 	AVCodecParameters* DemuxThread::getVideoCodecParames()
 	{
-		if (m_iVideoStreamIdx < 0)
+		if (!m_pFormatContext || m_iVideoStreamIdx < 0)
 			return nullptr;
 		return m_pFormatContext->streams[m_iVideoStreamIdx]->codecpar;
 	}
@@ -152,5 +151,19 @@ namespace wplayer
 			return m_pFormatContext->duration;
 		}
 		return 0;
+	}
+	// 获取音频timebase
+	AVRational DemuxThread::getAudioTimeBase()
+	{
+		if (!m_pFormatContext || m_iAudioStreamIdx < 0)
+			return AVRational{0,0};
+		return m_pFormatContext->streams[m_iAudioStreamIdx]->time_base;
+	}
+	// 获取视频timebase
+	AVRational DemuxThread::getVideoTimeBase()
+	{
+		if (!m_pFormatContext || m_iVideoStreamIdx < 0)
+			return AVRational{ 0,0 };
+		return m_pFormatContext->streams[m_iVideoStreamIdx]->time_base;
 	}
 }

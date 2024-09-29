@@ -62,6 +62,9 @@
     <Filter Include="src\ui\PlayControlWidget">
       <UniqueIdentifier>{be36b379-b620-451e-8c23-754d3e3b7293}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\logical\SyncClock">
+      <UniqueIdentifier>{5c7be546-8b85-4fae-ad37-c3661062a3cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ui\WPlayer.cpp">
@@ -108,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="module\GLWidget\GLRenderWidget.cpp">
       <Filter>src\module\GLWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\SyncClock\SyncClock.cpp">
+      <Filter>src\logical\SyncClock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +182,9 @@
     </ClInclude>
     <ClInclude Include="logic\PlayController\PlayControlState.h">
       <Filter>src\logical\PlayController</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\SyncClock\SyncClock.h">
+      <Filter>src\logical\SyncClock</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

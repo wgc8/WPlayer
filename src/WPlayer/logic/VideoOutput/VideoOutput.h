@@ -1,5 +1,14 @@
 #pragma once
 #include <QObject>
+#ifdef __cplusplus
+extern "C"
+{
+// 包含ffmpeg头文件
+//#include "libavutil/time.h"
+#include "libavutil/rational.h"
+}
+#endif // __cplusplus
+
 class GLRenderWidget;
 class AVFrame;
 class QWidget;
@@ -7,12 +16,13 @@ class QTimer;
 class AVCodecParameters;
 namespace wplayer
 {
+	class SyncClock;
 	class AVFrameQueue;
 	class VideoOutput :public QObject
 	{
 		Q_OBJECT
 	public:
-		VideoOutput(AVFrameQueue* videoFrameQue);
+		VideoOutput(AVFrameQueue* videoFrameQue, SyncClock* clock);
 		~VideoOutput();
 
 		QWidget* getGLWidget();
@@ -34,7 +44,7 @@ namespace wplayer
 		 * @ param: videoParams
 		 * @return: int
 		 */
-		int init(AVCodecParameters* videoParams);
+		int init(AVCodecParameters* videoParams, const AVRational& timebase);
 		/**
 		 * @ fn: readFrame
 		 * @ brief: 读取视频帧.
@@ -58,6 +68,8 @@ namespace wplayer
 		QTimer* m_timer{ nullptr };
 
 		AVCodecParameters* m_pVideoParams{ nullptr };				// 解码器参数
+		SyncClock* m_pClock{ nullptr };								// 音画同步时钟
+		AVRational m_timebase;										// 视频时间基
 	};
 
 }

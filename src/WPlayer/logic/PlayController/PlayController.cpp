@@ -5,6 +5,7 @@
 #include "logic/DecodeThread/DecodeThread.h"
 #include "logic/VideoOutput/VideoOutput.h"
 #include "logic/AudioOutput/AudioOutput.h"
+#include "logic/SyncClock/SyncClock.h"
 
 extern "C"
 {
@@ -28,6 +29,13 @@ namespace wplayer {
         if (initDecodeThread() < 0)
         {
             LOG(ERROR) << "init DecodeThread failed.";
+            return;
+        }
+        // 初始化时钟
+        m_pClock = new SyncClock();
+        if (!m_pClock)
+        {
+            LOG(ERROR) << "init clock failed";
             return;
         }
         // 初始化音视频输出
@@ -82,6 +90,7 @@ namespace wplayer {
             LOG(ERROR) << "played file name is empty";
             return -1;
         }
+        m_pClock->init();
         int ret;
         ret = m_pDemuxThread->init(m_strFileName.toStdString());
         if (ret < 0)
@@ -101,18 +110,19 @@ namespace wplayer {
             LOG(ERROR) << "VideoDecodeThread init failed";
             return -1;
         }
-        ret = m_pAudioOutput->init(m_pDemuxThread->getAudioCodecParames());
+        ret = m_pAudioOutput->init(m_pDemuxThread->getAudioCodecParames(), m_pDemuxThread->getAudioTimeBase());
         if (ret < 0)
         {
             LOG(ERROR) << "AudioOutput init failed";
             return -1;
         }        
-        ret = m_pVideoOutput->init(m_pDemuxThread->getVideoCodecParames());
+        ret = m_pVideoOutput->init(m_pDemuxThread->getVideoCodecParames(), m_pDemuxThread->getVideoTimeBase());
         if (ret < 0)
         {
             LOG(ERROR) << "AudioOutput init failed";
             return -1;
         }
+        // TODO 考虑上面一串用do while(0)
 
         m_iDuration = m_pDemuxThread->getDuration();
         // 显示视频播放进度，四舍五入
@@ -160,6 +170,7 @@ namespace wplayer {
     // 播放
     void PlayController::play()
     {
+        // TODO 传不存在的文件名进来，一点播放就崩溃
         if (m_pDemuxThread)
         {
             m_pDemuxThread->start();
@@ -198,11 +209,10 @@ namespace wplayer {
 
     int PlayController::initAVOutput()
     {
-        m_pAudioOutput = new AudioOutput(&m_aFrameQue);
-        m_pVideoOutput = new VideoOutput(&m_vFrameQue);
+        m_pAudioOutput = new AudioOutput(&m_aFrameQue, m_pClock);
+        m_pVideoOutput = new VideoOutput(&m_vFrameQue, m_pClock);
         if (!m_pAudioOutput || !m_pVideoOutput)
         {
-            LOG(ERROR) << "init AVOutput failed.";
             return -1;
         }
         return 0;

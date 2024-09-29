@@ -2,12 +2,12 @@
 #include "stdint.h"
 #include <QThread>
 #include "logic/PlayController/PlayControlState.h"
-#include <atomic>
 #ifdef __cplusplus
 extern "C"
 {
 	// 包含ffmpeg头文件
 #include "libavutil/samplefmt.h"
+#include "libavutil/rational.h"
 }
 #endif // __cplusplus
 
@@ -19,6 +19,7 @@ class AVCodecParameters;
 class SwrContext;
 namespace wplayer
 {
+	class SyncClock;
 	class AVFrameQueue;
 	struct AudioParams
 	{
@@ -33,12 +34,12 @@ namespace wplayer
 	{
 		Q_OBJECT
 	public:
-		AudioOutput(AVFrameQueue* audioFrameQue);
+		AudioOutput(AVFrameQueue* audioFrameQue, SyncClock* clock);
 		~AudioOutput();
 
 		void run();
 		int uninit();
-		int init(AVCodecParameters* audioParms);
+		int init(AVCodecParameters* audioParms, const AVRational& timebase);
 		void setVolume(double value);
 		int seek();
 		void play();
@@ -75,8 +76,8 @@ namespace wplayer
 		AVCodecParameters* m_pAudioParams{ nullptr };
 		// 重采样器
 		SwrContext* m_pSwrCxt{ nullptr };
-
-		std::atomic<int64_t> m_aiCur{ 0 };
+		SyncClock* m_pClock{ nullptr };								// 音画同步时钟
+		AVRational m_timebase;										// 音频时间基
 	};
 
 }

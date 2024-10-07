@@ -28,7 +28,7 @@ namespace wplayer {
 		 * @ param: timeout
 		 * @return: AVFrame*
 		 */
-		AVFrame* waitAndPop(const int timeout);
+		AVFrame* waitAndPop(const int timeout = 0);
 		/**
 		 * @ fn: front
 		 * @ brief: 获取队头.

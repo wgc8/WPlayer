@@ -22,6 +22,10 @@ namespace wplayer
 
 		double getClock();
 
+		double getPts() { return m_dPts; };
+
+		void reset();
+
 	private:
 
 		void setClockAt(double pts, double time);

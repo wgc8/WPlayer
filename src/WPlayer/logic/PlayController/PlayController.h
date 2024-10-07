@@ -88,6 +88,7 @@ namespace wplayer {
 		 */
 		void setGLWidget(GLRenderWidget* pWidget);
 
+		void setVolume(double v);
 	private:
 		int initAVOutput();
 		void initConnection();
@@ -107,5 +108,6 @@ namespace wplayer {
 		DecodeThread* m_pVideoDecodeThread{ nullptr };      // 视频解码线程
 		DecodeThread* m_pAudioDecodeThread{ nullptr };      // 音频解码线程
 		SyncClock* m_pClock{ nullptr };						// 音画同步时钟
+		QTimer* m_timerDur{ nullptr };							// 更新播放时长定时器
 	};
 }

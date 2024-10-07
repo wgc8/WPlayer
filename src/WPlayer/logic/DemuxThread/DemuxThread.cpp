@@ -156,14 +156,16 @@ namespace wplayer
 	AVRational DemuxThread::getAudioTimeBase()
 	{
 		if (!m_pFormatContext || m_iAudioStreamIdx < 0)
-			return AVRational{0,0};
+			return AVRational{ 0,1 };
+		LOG(INFO) << "get audio time base: " << m_pFormatContext->streams[m_iAudioStreamIdx]->time_base.num << " / " << m_pFormatContext->streams[m_iAudioStreamIdx]->time_base.den;
 		return m_pFormatContext->streams[m_iAudioStreamIdx]->time_base;
 	}
 	// ªÒ»° ”∆µtimebase
 	AVRational DemuxThread::getVideoTimeBase()
 	{
 		if (!m_pFormatContext || m_iVideoStreamIdx < 0)
-			return AVRational{ 0,0 };
+			return AVRational{ 0,1 };
+		LOG(INFO) << "get video time base: " << m_pFormatContext->streams[m_iVideoStreamIdx]->time_base.num << " / " << m_pFormatContext->streams[m_iVideoStreamIdx]->time_base.den;
 		return m_pFormatContext->streams[m_iVideoStreamIdx]->time_base;
 	}
 }

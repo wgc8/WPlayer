@@ -7,7 +7,8 @@ namespace wplayer
 {
 	SyncClock::SyncClock()
 	{
-		setClock(NAN);
+		//setClock(NAN);
+		reset();
 	}
 
 	SyncClock::~SyncClock()
@@ -39,6 +40,12 @@ namespace wplayer
 	{
 		double time = getMicroseconds() / 1000000.0;
 		return time + m_dPtsDrift;
+	}
+
+	void SyncClock::reset()
+	{
+		m_dPts = 0.0;
+		m_dPtsDrift = 0.0;
 	}
 
 	void SyncClock::setClockAt(double pts, double time)

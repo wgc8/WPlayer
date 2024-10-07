@@ -46,8 +46,8 @@ namespace wplayer
 		void stop();
 		void pause();
 		int playControl(PlayControlStatus state);
+		void initConnection();
 
-		int64_t getAudioPts();
 	private:
 		void playLoop();
 		int initOutput(AVCodecParameters* audioParms);

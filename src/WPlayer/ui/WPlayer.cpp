@@ -16,7 +16,7 @@ namespace wplayer {
         initAVOutput();
         initUI();
         initConnection();
-        PlayController::getInstance().setFileName("dove.mp4");
+        PlayController::getInstance().setFileName("test.mp4");
 
     }
 
@@ -38,8 +38,8 @@ namespace wplayer {
 
     void WPlayer::initConnection()
     {
-        connect(m_pPlayControlBar, &PlayControlBar::signalPlay, &PlayController::getInstance(), &PlayController::play);
-        connect(m_pPlayControlBar, &PlayControlBar::signalPause, &PlayController::getInstance(), &PlayController::pause);
+
+        connect(m_pPlayControlBar, &PlayControlBar::signalFullScreen, this, &QWidget::showFullScreen);
     }
 
     WPlayer::~WPlayer()

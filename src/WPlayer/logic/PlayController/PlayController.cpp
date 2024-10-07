@@ -6,7 +6,9 @@
 #include "logic/VideoOutput/VideoOutput.h"
 #include "logic/AudioOutput/AudioOutput.h"
 #include "logic/SyncClock/SyncClock.h"
-
+#include <QTimer>
+#include <QFile>
+#include <algorithm>
 extern "C"
 {
     // 包含ffmpeg头文件
@@ -33,6 +35,7 @@ namespace wplayer {
         }
         // 初始化时钟
         m_pClock = new SyncClock();
+
         if (!m_pClock)
         {
             LOG(ERROR) << "init clock failed";
@@ -45,6 +48,11 @@ namespace wplayer {
             return;
         }
         m_ePlayStatue = PCS_IDLE;
+
+        m_timerDur = new QTimer();
+        m_timerDur->setInterval(1000);
+        m_timerDur->start();
+        initConnection();
     }
 
 	PlayController::~PlayController()
@@ -79,8 +87,15 @@ namespace wplayer {
     // 设置播放文件名
     void PlayController::setFileName(const QString& name)
     {
-        m_strFileName = name;
-        init();
+        if (QFile::exists(name))
+        {
+            m_strFileName = name;
+            init();
+        }
+        else
+        {
+            LOG(INFO) << "file not exist.";
+        }
     }
 
     int PlayController::init()
@@ -133,6 +148,16 @@ namespace wplayer {
     // 暂停
     void PlayController::pause()
     {
+        LOG(INFO) << "pause enter";
+        if (m_pAudioOutput)
+        {
+            m_pAudioOutput->pause();
+        }
+        if (m_pVideoOutput)
+        {
+            m_pVideoOutput->pause();
+        }
+        LOG(INFO) << "pause end";
     }
 
     // 跳转
@@ -170,16 +195,17 @@ namespace wplayer {
     // 播放
     void PlayController::play()
     {
+        LOG(INFO) << "play enter";
         // TODO 传不存在的文件名进来，一点播放就崩溃
-        if (m_pDemuxThread)
+        if (m_pDemuxThread && !m_pDemuxThread->isRunning())
         {
             m_pDemuxThread->start();
         }
-        if (m_pAudioDecodeThread)
+        if (m_pAudioDecodeThread && !m_pAudioDecodeThread->isRunning())
         {
             m_pAudioDecodeThread->start();
         }
-        if (m_pVideoDecodeThread)
+        if (m_pVideoDecodeThread && !m_pVideoDecodeThread->isRunning())
         {
             m_pVideoDecodeThread->start();
         }
@@ -187,6 +213,7 @@ namespace wplayer {
             m_pVideoOutput->play();
         if (m_pAudioOutput)
             m_pAudioOutput->play();
+        LOG(INFO) << "play end";
     }
 
     // 获取GLWidget指针
@@ -207,6 +234,15 @@ namespace wplayer {
         }
     }
 
+    void PlayController::setVolume(double v)
+    {
+        if (m_pAudioOutput)
+        {
+            m_pAudioOutput->setVolume(v);
+            LOG(INFO) << "change audio volume: " << v;
+        }
+    }
+
     int PlayController::initAVOutput()
     {
         m_pAudioOutput = new AudioOutput(&m_aFrameQue, m_pClock);
@@ -216,6 +252,18 @@ namespace wplayer {
             return -1;
         }
         return 0;
+    }
+
+    void PlayController::initConnection()
+    {
+        connect(m_timerDur, &QTimer::timeout, [&] {
+            int64_t curSecond = 0;
+            if (m_pClock)
+            {
+                curSecond = static_cast<int64_t>(m_pClock->getPts());
+            }
+            //curSecond = min(0, curSecond);
+            emit signalUpdateProgress(curSecond, (m_iDuration + AV_TIME_BASE / 2) / AV_TIME_BASE); });
     }
 
     int PlayController::initDemuxThread()

@@ -10,6 +10,9 @@ namespace wplayer {
 	public:
 		PlayControlBar(QWidget* parent);
 		~PlayControlBar();
+
+		void initUI();
+
 		void initConnection();
 
 		void onPlayBtnClicked();
@@ -18,7 +21,9 @@ namespace wplayer {
 	signals:
 		void signalPlay();
 		void signalPause();
-
+		void signalFullScreen();
+	public slots:
+		void onVolumeChanged(int);
 	protected:
 		virtual void paintEvent(QPaintEvent* e) override;
 

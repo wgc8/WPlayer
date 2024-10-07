@@ -1,6 +1,7 @@
 #include "AudioOutput.h"
 #include "module/Log/easylogging++.h"
 #include "logic/AVFrameQueue/AVFrameQueue.h"
+#include "logic/SyncClock/SyncClock.h"
 #include <QAudioOutput>
 #include <QAudioFormat>
 #include <QAudioDeviceInfo>
@@ -20,7 +21,7 @@ namespace wplayer
 		m_pQueAudioFrame(audioFrameQue),
 		m_pClock(clock)
 	{
-		
+		initConnection();
 	}
 	AudioOutput::~AudioOutput()
 	{
@@ -74,6 +75,9 @@ namespace wplayer
 		if (!m_pAudioOutput)
 		{
 			m_pAudioOutput = new QAudioOutput(deviceInfo, audioFormmat, this);
+			connect(m_pAudioOutput, &QAudioOutput::stateChanged, [&] {
+				LOG(ERROR) << "audio output state: " << m_pAudioOutput->state() << " error: " << m_pAudioOutput->error();
+				});
 			LOG(INFO) << "init audio output";
 		}
 		// TODO 先使用默认方式
@@ -139,11 +143,24 @@ namespace wplayer
 		{
 			start();
 		}
+		if (m_pAudioOutput && m_pAudioOutput->state() == QAudio::SuspendedState)
+		{
+			// 暂停后继续播放调用的是resume
+			m_pAudioOutput->resume();
+		}
 		m_eStatus = PCS_PLAYING;
 	}
 
 	void AudioOutput::stop()
 	{
+	}
+
+	void AudioOutput::pause()
+	{
+		if (m_pAudioOutput)
+		{
+			m_pAudioOutput->suspend();
+		}
 	}
 
 	/**
@@ -191,16 +208,32 @@ namespace wplayer
 					return;
 				}
 				int tmp = outBytes;
+				auto pts = frame->pts;
+				if (m_pClock && pts != AV_NOPTS_VALUE)
+				{
+					// TODO 这里优化可以再加上考虑缓冲区内字节的时间
+					//int usedBytes = m_pAudioOutput->bufferSize() - m_pAudioOutput->bytesFree();
+					double ptsSecond = pts * av_q2d(m_timebase);
+					m_pClock->setClock(ptsSecond);
+//#ifdef DEBUG_MODE
+					//LOG(INFO) << "set clock: " << ptsSecond;
+//#endif
+				}
 #if 1			// 只要存在空间就往声卡写，直到帧数据写完
 				while (tmp > 0)
 				{
 					uint8_t* writePos = m_pBuf;
 					int freeBytes = m_pAudioOutput->bytesFree();
+					// TODO 这里发现存在bytesFree返回0的情况，暂时没找到原因，先打印
+					//if (freeBytes == 0)
+					//{
+					//	LOG(ERROR) << "audio output state: " << m_pAudioOutput->state() << " error: " << m_pAudioOutput->error();
+					//}
 					int writeBytes = min(freeBytes, tmp);
 					m_pAudioDevice->write((const char*)writePos, writeBytes);
 					writePos += writeBytes;
 					tmp -= writeBytes;
-					msleep(10);
+					msleep(20);
 				}
 #else			// 有足够空间再整体写入
 				while (tmp > m_pAudioOutput->bytesFree())
@@ -293,5 +326,12 @@ namespace wplayer
 		}
 		m_eStatus = state;
 		return 0;
+	}
+	void AudioOutput::initConnection()
+	{
+		if (m_pAudioOutput)
+		{
+
+		}
 	}
 }

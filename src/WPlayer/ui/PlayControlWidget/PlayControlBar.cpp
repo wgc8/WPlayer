@@ -2,11 +2,15 @@
 #include "ui_PlayControlBar.h"
 #include "logic/PlayController/PlayController.h"
 #include "module/Log/easylogging++.h"
+#define SLIDER_MAX_INTERVALS 1000
+
 namespace wplayer {
+
 	PlayControlBar::PlayControlBar(QWidget* parent)
 		: QWidget(parent)
 	{
 		ui.setupUi(this);
+		initUI();
 		setAttribute(Qt::WA_StyledBackground);
 		initConnection();
 
@@ -16,12 +20,36 @@ namespace wplayer {
 	{
 	}
 
+	void PlayControlBar::initUI()
+	{
+		// 初始化滑动条
+		ui.processSlider->setMinimum(0);
+		ui.processSlider->setMaximum(SLIDER_MAX_INTERVALS);
+		ui.processSlider->setSingleStep(1);
+		ui.processSlider->setValue(0);
+		ui.processSlider->setTracking(false);
+		// 初始化音量滑动条
+		ui.volumeSlider->setMinimum(0);
+		ui.volumeSlider->setMaximum(100);
+		ui.volumeSlider->setSingleStep(1);
+		ui.volumeSlider->setValue(100);
+		ui.volumeSlider->setTracking(false);
+	}
+
 	void PlayControlBar::initConnection()
 	{
 		// 定义切换播放/暂停信号槽
 		connect(ui.playBtn, &QPushButton::clicked, this, &PlayControlBar::onPlayBtnClicked);
 		// 更新播放时长
 		connect(&PlayController::getInstance(), &PlayController::signalUpdateProgress, this, &PlayControlBar::onUpdateProgress);
+		// 音量调节
+		connect(ui.volumeSlider, &QSlider::valueChanged, this, &PlayControlBar::onVolumeChanged);
+		// 播放
+		connect(this, &PlayControlBar::signalPlay, &PlayController::getInstance(), &PlayController::play);
+		// 暂停
+		connect(this, &PlayControlBar::signalPause, &PlayController::getInstance(), &PlayController::pause);
+		// 全屏
+		connect(ui.fullScreenBtn, &QPushButton::clicked, this, &PlayControlBar::signalFullScreen);
 	}
 
 	void PlayControlBar::onPlayBtnClicked()
@@ -69,6 +97,16 @@ namespace wplayer {
 			m_strCur = QString::number(curHour) + ':' + m_strCur;
 		}
 		ui.label->setText(m_strCur + '/' + m_strDur);
+		
+		// 设置进度条值
+		int value = 0.5 + SLIDER_MAX_INTERVALS * cur / dur;
+		ui.processSlider->setValue(value);
+	}
+
+	void PlayControlBar::onVolumeChanged(int value)
+	{
+		double percent = value / 100.0;
+		PlayController::getInstance().setVolume(percent);
 	}
 
 	void PlayControlBar::paintEvent(QPaintEvent * e)

@@ -2,6 +2,7 @@
 #include "module/GLWidget/GLRenderWidget.h"
 #include "module/Log/easylogging++.h"
 #include "logic/AVFrameQueue/AVFrameQueue.h"
+#include "logic/SyncClock/SyncClock.h"
 #include <QTimer>
 #ifdef __cplusplus
 extern "C"
@@ -12,6 +13,7 @@ extern "C"
 #include "libavcodec/avcodec.h"
 }
 #endif
+#define VIDEO_LOOP_INTERVAL 10
 
 namespace wplayer
 {
@@ -28,7 +30,7 @@ namespace wplayer
 		}
 		initConnect();
 		// 先让画面跑起来
-		m_timer->setInterval(20);
+		m_timer->setInterval(VIDEO_LOOP_INTERVAL);
 	}
 
 	VideoOutput::~VideoOutput()
@@ -101,9 +103,33 @@ namespace wplayer
 
 	void VideoOutput::readFrame()
 	{
-		AVFrame* frame = m_pFrameQue->waitAndPop(10);
-		if (frame)
+		AVFrame* frame = m_pFrameQue->front();
+		if (frame && frame->pts != AV_NOPTS_VALUE)
 		{
+			auto pts = frame->pts;
+			double videoPts = pts * av_q2d(m_timebase);
+			double clockPts = m_pClock->getClock();
+			double diff = videoPts - clockPts;
+//#ifdef DEBUG_MODE
+			//LOG(INFO) << "video pts: " << videoPts << " diff: " << diff;
+//#endif
+			// 播放快了，就shuiyiduanshijianzaituichu 
+			if (diff > 0.005)
+			{
+				int delayTime = diff * 1000;
+				delayTime = FFMIN(delayTime, VIDEO_LOOP_INTERVAL);
+				m_timer->setInterval(delayTime);
+				return;
+			}
+			m_timer->setInterval(VIDEO_LOOP_INTERVAL);
+			frame = m_pFrameQue->waitAndPop();
+			// 播放慢了，就丢帧
+			//if (diff < -0.01)
+			//{
+			//	LOG(INFO) << "diff: " << diff << ". drop frame";
+			//	av_frame_free(&frame);
+			//	return;
+			//}
 			AVPixelFormat format =(AVPixelFormat) frame->format;
 			if (m_glWidget)
 			{
@@ -135,5 +161,9 @@ namespace wplayer
 	{
 		m_timer->start();
 		//readFrame();
+	}
+	void VideoOutput::pause()
+	{
+		m_timer->stop();
 	}
 }

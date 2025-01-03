@@ -65,27 +65,52 @@ namespace wplayer
 				LOG(INFO) << "quit thread then, bStop: " << m_bStop;
 				break;
 			}
+			//LOG(DEBUG) << "wgc1111";
 			// 当队列积压过多时，进行流量控制
 			if (m_queFrame->size() > MAX_FRAMEQUEUE_SIZE)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(DECODEC_THREAD_SLEEP_TIME));
-				continue;
+				// 当队列积压过多时，queF
+				auto pTmpPkg = m_quePacket->front();
+				if (!pTmpPkg || NULL != pTmpPkg->data)
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(DECODEC_THREAD_SLEEP_TIME));
+					continue;
+				}
+				//LOG(DEBUG) << "wgc7777";
 			}
+			//LOG(DEBUG) << "wgc2222";
 			auto pPkt = m_quePacket->waitAndPop(10);
+			//LOG(DEBUG) << "wgc3333";
 			if (!pPkt)
 			{
 #ifdef DEBUG_MODE
 				LOG(INFO) << "not get packet";
 #endif
+				//LOG(DEBUG) << "wgc1111";
 				continue;
 			}
+			//LOG(DEBUG) << "wgc4444";
+			// 判断是否为flush数据
+			//if (0 == strcmp((char*)pPkt->data, FLUSH_DATA))
+			if (NULL == pPkt->data)
+			{
+				LOG(DEBUG) << "m_pCodecContext id: " << m_pCodecContext->codec_id << "m_queFrame size: " << m_queFrame->size();
+				if (m_pCodecContext)
+				{
+					m_queFrame->release();
+					avcodec_flush_buffers(m_pCodecContext);
+				}
+				av_packet_free(&pPkt);
+				LOG(DEBUG) << "wgc5555";
+				continue;
+			}
+			//LOG(DEBUG) << "wgc6666";
 			int ret = avcodec_send_packet(m_pCodecContext, pPkt);
 			av_packet_free(&pPkt);
 			if (ret < 0)
 			{
 				av_strerror(ret, m_strErr, sizeof(m_strErr));
 				LOG(INFO) << "avcodec_send_packet failed, errCode: " << ret << " errStr: " << m_strErr;
-
 			}
 			// 获取包解码后的帧
 			for (;;)
@@ -98,6 +123,10 @@ namespace wplayer
 				}
 				else if (AVERROR(EAGAIN) == ret)
 				{
+					break;
+				}
+				else if (ret == AVERROR_EOF || ret == AVERROR(EINVAL)) {
+					// EOF exit loop
 					break;
 				}
 				else
@@ -155,4 +184,5 @@ namespace wplayer
 		LOG(INFO) << "init Decondec thread success.";
 		return 0;
 	}
+
 }

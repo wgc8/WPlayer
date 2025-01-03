@@ -26,6 +26,7 @@ namespace wplayer
 	AudioOutput::~AudioOutput()
 	{
 		// TODO线程没退出，会崩溃
+		m_eStatus = PCS_STOP;
 		swr_free(&m_pSwrCxt);
 		av_free(m_pBuf);
 	}

@@ -42,14 +42,20 @@ namespace wplayer {
 		 */
 		int size();
 
-	private:
+		///**
+		// * @ fn: reset
+		// * @ brief: 重置队列标志位.
+		// * @return: void
+		// */
+		//void reset();
+
 		/**
 		 * @ fn: release
 		 * @ brief: 释放队列资源.
 		 * @return: void
 		 */
 		void release();
-
+	private:
 		ThreadSafeQueue<AVFrame*> m_que;
 	};
 }

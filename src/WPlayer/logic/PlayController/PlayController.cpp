@@ -161,8 +161,41 @@ namespace wplayer {
     }
 
     // 跳转
-    void PlayController::seek()
+    void PlayController::seek(const int64_t posTs)
     {
+        int ret = 0;
+        int64_t curTs = 0;
+        if (m_pClock)
+        {
+            curTs = 1000 * 1000 * m_pClock->getPts();
+        }
+        do
+        {
+            // 调用demux线程执行
+            ret = m_pDemuxThread->doSeekFile(posTs, curTs);
+            if (ret < 0)
+            {
+                LOG(ERROR) << "do seek failed";
+                break;
+            }
+
+            // 冲刷decode解码器的缓存
+            AVPacket* flushPacket = av_packet_alloc();
+            av_init_packet(flushPacket);
+            AVPacket* flushPacketV = av_packet_alloc();
+            av_init_packet(flushPacketV);
+            //std::copy_n(FLUSH_DATA, ::strlen(FLUSH_DATA), flushPacket->data);
+            // 清空package队列
+            // if (audioStreamIdx > 0)
+            m_aPacketQue.release();
+            m_aPacketQue.push(flushPacket);
+            LOG(DEBUG) << "audio package size: " << m_aPacketQue.size();
+            // if (videoStreamIdx > 0)
+            m_vPacketQue.release();
+            m_vPacketQue.push(flushPacketV);
+            LOG(DEBUG) << "video package size: " << m_vPacketQue.size();
+        } while (0);
+        return;
     }
 
     // 停止

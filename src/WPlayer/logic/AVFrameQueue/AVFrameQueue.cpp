@@ -60,6 +60,11 @@ namespace wplayer {
 		return m_que.getSize();
 	}
 
+	//void AVFrameQueue::reset()
+	//{
+	//	m_que.reset();
+	//}
+
 	void AVFrameQueue::release()
 	{
 		while (true)

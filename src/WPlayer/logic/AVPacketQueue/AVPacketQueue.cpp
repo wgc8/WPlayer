@@ -49,6 +49,17 @@ namespace wplayer {
 		return m_que.getSize();
 	}
 
+	AVPacket* AVPacketQueue::front()
+	{
+		AVPacket* tmpPkg = nullptr;
+		int ret = m_que.front(tmpPkg);
+		if (ret < 0)
+		{
+			LOG(ERROR) << "AVPacketQueue get front failed, ret: " << ret;
+		}
+		return tmpPkg;
+	}
+
 	void AVPacketQueue::release()
 	{
 		while (true)

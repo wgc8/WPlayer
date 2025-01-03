@@ -16,7 +16,7 @@ namespace wplayer {
         initAVOutput();
         initUI();
         initConnection();
-        PlayController::getInstance().setFileName("test.mp4");
+        PlayController::getInstance().setFileName("123.mp4");
 
     }
 

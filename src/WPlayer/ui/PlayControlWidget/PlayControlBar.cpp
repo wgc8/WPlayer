@@ -50,6 +50,12 @@ namespace wplayer {
 		connect(this, &PlayControlBar::signalPause, &PlayController::getInstance(), &PlayController::pause);
 		// 全屏
 		connect(ui.fullScreenBtn, &QPushButton::clicked, this, &PlayControlBar::signalFullScreen);
+		// 进度条拖动
+		connect(ui.processSlider, &QSlider::valueChanged, this, &PlayControlBar::onSeek);
+		// 进度条按压状态
+		connect(ui.processSlider, &QSlider::sliderPressed, [&] {m_bProcessSliderPressed = true; });
+		connect(ui.processSlider, &QSlider::sliderReleased, [&] {m_bProcessSliderPressed = false; m_bSeek = true; });
+
 	}
 
 	void PlayControlBar::onPlayBtnClicked()
@@ -97,16 +103,31 @@ namespace wplayer {
 			m_strCur = QString::number(curHour) + ':' + m_strCur;
 		}
 		ui.label->setText(m_strCur + '/' + m_strDur);
-		
-		// 设置进度条值
-		int value = 0.5 + SLIDER_MAX_INTERVALS * cur / dur;
-		ui.processSlider->setValue(value);
+
+		// 设置进度条值，非pressed状态才改进度条的值
+		if (!m_bProcessSliderPressed)
+		{
+			int value = 0.5 + SLIDER_MAX_INTERVALS * cur / dur;
+			ui.processSlider->setValue(value);
+		}
 	}
 
 	void PlayControlBar::onVolumeChanged(int value)
 	{
 		double percent = value / 100.0;
 		PlayController::getInstance().setVolume(percent);
+	}
+
+	void PlayControlBar::onSeek(int value)
+	{
+		if (m_bSeek)
+		{
+			m_bSeek = false;
+			// 总时长秒 * (进度条比例) * 微妙 * 毫秒
+			int64_t seekPosMicroSec = m_lDur * value / SLIDER_MAX_INTERVALS * 1000 * 1000 ;
+ 			LOG(INFO) << "slider presed. move to seekPos: " << seekPosMicroSec;
+			PlayController::getInstance().seek(seekPosMicroSec);
+		}
 	}
 
 	void PlayControlBar::paintEvent(QPaintEvent * e)

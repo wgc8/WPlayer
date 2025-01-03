@@ -46,7 +46,14 @@ namespace wplayer {
 		 * @return: int
 		 */
 		int size();
-	private:
+		
+		/**
+		 * @ fn: front
+		 * @ brief: 获取队头.
+		 * @return: AVPacket
+		 */
+		AVPacket* front();
+
 		/**
 		 * @ fn: release
 		 * @ brief: 释放队列资源.
@@ -54,6 +61,7 @@ namespace wplayer {
 		 */
 		void release();
 
+	private:
 		ThreadSafeQueue<AVPacket*> m_que;
 	};
 }

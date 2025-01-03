@@ -92,6 +92,17 @@ public:
 		m_condVar.notify_all();
 	};
 
+	void reset()
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
+		if (!m_que.empty())
+		{
+			std::queue<T> empty;
+			std::swap(m_que, empty);
+		}
+		m_iAbort = 0;
+	}
+
 	std::shared_ptr<T> front() 
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);

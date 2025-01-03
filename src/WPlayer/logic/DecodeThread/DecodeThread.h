@@ -9,7 +9,7 @@
  *********************************************************************/
 #pragma once
 #include "module/Thread/ThreadBase.h"
-
+static const char* FLUSH_DATA = "flush";
 class AVCodecContext;
 class AVCodecParameters;
 namespace wplayer
@@ -41,6 +41,7 @@ namespace wplayer
 		 * @return: int
 		 */
 		int init(AVCodecParameters* condecParams);
+
 	private:
 		// ±®¥Ì–≈œ¢
 		char m_strErr[256] = { 0 };

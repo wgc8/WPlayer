@@ -91,12 +91,17 @@ namespace wplayer
 				break;
 			}
 			// 当队列积压过多时，进行流量控制
+			// 当正在seek时，也直接跳过，线程同步
 			if (m_queAudioPkt->size() > MAX_PACKETQUEUE_SIZE || m_queVideoPkt->size() > MAX_PACKETQUEUE_SIZE)
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(DEMUX_THREAD_SLEEP_TIME));
 				continue;
 			}
-			ret = av_read_frame(m_pFormatContext, &pkt);
+			// 主线程seek，进行同步。目前先这样。后续也考虑无锁，在子线程中seek
+			{
+				std::lock_guard<std::mutex> lg(m_mtxSeek);
+				ret = av_read_frame(m_pFormatContext, &pkt);
+			}
 			if (ret < 0)
 			{
 				av_strerror(ret, m_strErr, sizeof(m_strErr));
@@ -167,5 +172,21 @@ namespace wplayer
 			return AVRational{ 0,1 };
 		LOG(INFO) << "get video time base: " << m_pFormatContext->streams[m_iVideoStreamIdx]->time_base.num << " / " << m_pFormatContext->streams[m_iVideoStreamIdx]->time_base.den;
 		return m_pFormatContext->streams[m_iVideoStreamIdx]->time_base;
+	}
+
+	// 执行seek操作
+	int DemuxThread::doSeekFile(const int64_t dstTs, const int64_t curTs)
+	{
+		LOG(INFO) << "do seek file, curTs: " << curTs << " dstTs: " << dstTs;
+		// 这里minTs和maxYs算法存疑
+		auto minTs = dstTs > curTs ? curTs - 20 : INT64_MIN;
+		auto maxTs = dstTs < curTs ? curTs + 20 : INT64_MAX;
+		int ret = 0;
+		{
+			std::lock_guard<std::mutex> lg(m_mtxSeek);
+			ret = avformat_seek_file(m_pFormatContext, -1, minTs, dstTs, maxTs, AVSEEK_FLAG_BACKWARD);
+		}
+		
+		return ret;
 	}
 }

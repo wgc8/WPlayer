@@ -54,10 +54,12 @@ namespace wplayer {
 
 		/**
 		 * @ fn: seek
-		 * @ brief: 跳转.
+		 * @ brief: 跳转seek.
+		 * @ param: posTs
 		 * @return: void
 		 */
-		void seek();
+		void seek(const int64_t posTs);
+
 		/**
 		 * @ fn: stop
 		 * @ brief: 停止.
@@ -108,6 +110,6 @@ namespace wplayer {
 		DecodeThread* m_pVideoDecodeThread{ nullptr };      // 视频解码线程
 		DecodeThread* m_pAudioDecodeThread{ nullptr };      // 音频解码线程
 		SyncClock* m_pClock{ nullptr };						// 音画同步时钟
-		QTimer* m_timerDur{ nullptr };							// 更新播放时长定时器
+		QTimer* m_timerDur{ nullptr };						// 更新播放时长定时器
 	};
 }

@@ -113,7 +113,7 @@ namespace wplayer
 //#ifdef DEBUG_MODE
 			//LOG(INFO) << "video pts: " << videoPts << " diff: " << diff;
 //#endif
-			// 播放快了，就shuiyiduanshijianzaituichu 
+			// 视频快于音频，就睡一段时间再退出
 			if (diff > 0.005)
 			{
 				int delayTime = diff * 1000;
